@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Period;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
@@ -16,11 +16,17 @@ public class ActionCO implements Serializable {
     private Long id;
     private String intitule;
     private double tauxAvancement;
+    private LocalDate dateDebutPrevisionnel;
+    private LocalDate dateFinPrevisionnel;
+    private LocalDate dateDebutReel;
+    private LocalDate dateFinReel;
     @ManyToOne
     private Objectif objectif;
-    @OneToOne
-    private DateCO dateCO;
     @OneToMany(mappedBy = "actionCO")
     private Collection<EvaluationActionCO> evaluationActionCOS;
+    @ManyToOne
+    private Gestionnaire createdByGestionnaire;
+    @OneToMany(mappedBy = "actionCO")
+    private Collection<ModificationActionCO> modificationActionCOs;
 
 }

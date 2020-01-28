@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
@@ -15,6 +14,7 @@ public class EvaluationActionCO implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate dateEvaluation;
+    private double tauxAvancement;
     @ManyToOne
     private ActionCO actionCO;
     @ManyToOne

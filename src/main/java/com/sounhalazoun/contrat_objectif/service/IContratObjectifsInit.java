@@ -1,13 +1,29 @@
 package com.sounhalazoun.contrat_objectif.service;
 
 public interface IContratObjectifsInit{
-    public void initUnitStructurelle();
-    public void initType();
-    public void initAxeStrategique();
-    public  void  initObjectif();
-    public void initActionCO();
-    public  void  initGestionnaire();
-    public void initEvaluationAxeStrategique();
-    public void initEvaluationActionCO();
-    public void initEvaluationObjectif();
+    void initUnitStructurelle();
+
+    void initType();
+
+    void initAxeStrategique();
+
+    void initObjectif();
+
+    void initActionCO();
+
+    void initGestionnaire();
+
+    void initEvaluationAxeStrategique();
+
+    void initEvaluationActionCO();
+
+    void initEvaluationObjectif();
+
+    void initModificationAxeStrategique();
+
+    void initModificationObjectif();
+
+    void initModificationActionCO();
+
+    void initPartiePrenante();
 }

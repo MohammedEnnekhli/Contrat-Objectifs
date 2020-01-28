@@ -9,14 +9,16 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-@Data @AllArgsConstructor @NoArgsConstructor
-public class EvaluationAxeStrategique implements Serializable {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ModificationActionCO implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate dateEvaluation;
-    private double tauxAvancement;
+    private LocalDate dateModification;
     @ManyToOne
-    private AxeStrategique axeStrategique;
+    private ActionCO actionCO;
     @ManyToOne
     private Gestionnaire gestionnaire;
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -17,10 +18,13 @@ import java.util.Collection;
 public class UniteStructurelle implements Serializable  {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Size(max = 150)
     private String intitule;
+    @Size(max = 50)
     private String code;
     @ManyToOne()
     @JoinColumn(name="unitePere_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UniteStructurelle uniteStructurellePere;
     @ManyToOne
     private Type type;
@@ -30,5 +34,8 @@ public class UniteStructurelle implements Serializable  {
     @OneToMany(mappedBy = "uniteStructurelle")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<Gestionnaire> gestionnaires;
+
+    @OneToMany(mappedBy = "uniteStructurelle")
+    private Collection<PartiePrenante> partiePrenantes;
 
 }

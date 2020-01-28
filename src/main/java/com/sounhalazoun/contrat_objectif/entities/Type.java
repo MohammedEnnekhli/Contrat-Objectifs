@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -14,6 +15,7 @@ import java.util.Collection;
 public class Type implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Size(max = 50)
     private String nom;
     @OneToMany(mappedBy = "type")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

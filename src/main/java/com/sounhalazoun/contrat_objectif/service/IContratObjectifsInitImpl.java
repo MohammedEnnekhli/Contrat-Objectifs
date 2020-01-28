@@ -29,14 +29,22 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
     @Autowired
     private GestionnaireRepository gestionnaireRepository;
     @Autowired
-    private DateCORepository dateCORepository;
-    @Autowired
     private  EvaluationAxeStrategiqueRepository evaluationAxeStrategiqueRepository;
     @Autowired
     private EvaluationObjectifRepository evaluationObjectifRepository;
     @Autowired
     private EvaluationActionCORepository evaluationActionCORepository;
+    @Autowired
+    private ModificationAxeStrategiqueRepository modificationAxeStrategiqueRepository;
+    @Autowired
+    private ModificationObjectifRepository modificationObjectifRepository;
+    @Autowired
+    private ModificationActionCORepository modificationActionCORepository;
+    @Autowired
+    private PartiePrenanteRepository partiePrenanteRepository;
     private Lorem lorem = new LoremIpsum();
+
+
     @Override
     public void initUnitStructurelle() {
         UniteStructurelle uniteStructurelle1 =new UniteStructurelle();
@@ -230,15 +238,18 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
 
     @Override
     public void initAxeStrategique() {
+        int numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
         uniteStructurelleRepository.findAll().forEach(uniteStructurelle -> {
             for(int i=0;i<2;i++){
                 AxeStrategique axeStrategique =new AxeStrategique();
                 axeStrategique.setIntitule(lorem.getTitle(8,10));
+                axeStrategique.setDescription(lorem.getTitle(20));
                 axeStrategique.setUniteStructurelle(uniteStructurelle);
-                DateCO dateCO=new DateCO();
-                dateCO.setDateDebutPrevisionnel(LocalDate.now().plusMonths(2L));
-                dateCORepository.save(dateCO);
-                axeStrategique.setDateCO(dateCO);
+                axeStrategique.setDateDebutPrevisionnel(LocalDate.now().plusMonths(2L));
+                axeStrategique.setCreatedByGestionnaire(gestionnaireRepository.getOne(1L +
+                        (long) (Math.random() * (gestSize - 1L))));
+                axeStrategique.setTauxAvancement(Math.random() * 100);
                 axeStrategiqueRepository.save(axeStrategique);
             }
         });
@@ -277,6 +288,8 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
              gestionnaire.setUniteStructurelle(unite);
              gestionnaire.setGrade(lorem.getStateAbbr());
              gestionnaire.setTel(lorem.getPhone());
+             gestionnaire.setIsActive(true);
+             gestionnaire.setEmail(lorem.getEmail());
              gestionnaireRepository.save(gestionnaire);
          }
 
@@ -285,78 +298,161 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
 
     @Override
     public void initEvaluationAxeStrategique() {
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
            axeStrategiqueRepository.findAll().forEach(axeStrategique -> {
-               EvaluationAxeStrategique evaluationAxeStrategique=new EvaluationAxeStrategique();
-               evaluationAxeStrategique.setAxeStrategique(axeStrategique);
-               long leftLimit = 1L;
-               long rightLimit = 62L;
-               evaluationAxeStrategique.setGestionnaire(gestionnaireRepository
-                       .getOne(leftLimit + (long) (Math.random() * (rightLimit - leftLimit))));
-               evaluationAxeStrategique.setDateEvaluation(LocalDate.ofEpochDay(ThreadLocalRandom
-                       .current().nextInt(49*365, 50*365)));
-               evaluationAxeStrategiqueRepository.save(evaluationAxeStrategique);
+               for (int i = 0; i < 2; i++) {
+                   EvaluationAxeStrategique evaluationAxeStrategique = new EvaluationAxeStrategique();
+                   evaluationAxeStrategique.setAxeStrategique(axeStrategique);
+                   evaluationAxeStrategique.setGestionnaire(gestionnaireRepository
+                           .getOne(1L + (long) (Math.random() * (gestSize - 1L))));
+                   evaluationAxeStrategique.setDateEvaluation(LocalDate.ofEpochDay(ThreadLocalRandom
+                           .current().nextInt(49 * 365, 50 * 365)));
+                   evaluationAxeStrategique.setTauxAvancement(Math.random() * 100);
+                   evaluationAxeStrategiqueRepository.save(evaluationAxeStrategique);
+               }
+
+
            });
     }
 
     @Override
     public void initEvaluationObjectif() {
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
         objectifRepository.findAll().forEach(objectif -> {
-            EvaluationObjectif evaluationObjectif=new EvaluationObjectif();
-            evaluationObjectif.setObjectif(objectif);
-            long leftLimitDate = 1L;
-            long rightLimitDate = 62L;
-            evaluationObjectif.setGestionnaire(gestionnaireRepository
-                    .getOne(leftLimitDate + (long) (Math.random() * (rightLimitDate - leftLimitDate))));
-            evaluationObjectif.setDateEvaluation(LocalDate.ofEpochDay(ThreadLocalRandom
-                    .current().nextInt(49*365, 50*365)));
-            evaluationObjectifRepository.save(evaluationObjectif);
+            for (int i = 0; i < 2; i++) {
+                EvaluationObjectif evaluationObjectif = new EvaluationObjectif();
+                evaluationObjectif.setObjectif(objectif);
+                evaluationObjectif.setGestionnaire(gestionnaireRepository
+                        .getOne(1L + (long) (Math.random() * (gestSize - 1L))));
+                evaluationObjectif.setDateEvaluation(LocalDate.ofEpochDay(ThreadLocalRandom
+                        .current().nextInt(49 * 365, 50 * 365)));
+                evaluationObjectif.setTauxAvancement(Math.random() * 100);
+                evaluationObjectifRepository.save(evaluationObjectif);
+            }
         });
+
     }
     @Override
     public void initEvaluationActionCO(){
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
         actionCORepository.findAll().forEach(actionCO -> {
-            EvaluationActionCO evaluationActionCO=new EvaluationActionCO();
-            evaluationActionCO.setActionCO(actionCO);
-            long leftLimitDate = 1L;
-            long rightLimitDate = 62L;
-            evaluationActionCO.setGestionnaire(gestionnaireRepository
-                    .getOne(leftLimitDate + (long) (Math.random() * (rightLimitDate - leftLimitDate))));
-            evaluationActionCO.setDateEvaluation(LocalDate.ofEpochDay(ThreadLocalRandom
-                    .current().nextInt(49*365, 50*365)));
-            evaluationActionCORepository.save(evaluationActionCO);
+            for (int i = 0; i < 2; i++) {
+                EvaluationActionCO evaluationActionCO = new EvaluationActionCO();
+                evaluationActionCO.setActionCO(actionCO);
+                evaluationActionCO.setGestionnaire(gestionnaireRepository
+                        .getOne(1L + (long) (Math.random() * (gestSize - 1L))));
+                evaluationActionCO.setDateEvaluation(LocalDate.ofEpochDay(ThreadLocalRandom
+                        .current().nextInt(49 * 365, 50 * 365)));
+                evaluationActionCO.setTauxAvancement(Math.random() * 100);
+                evaluationActionCORepository.save(evaluationActionCO);
+            }
         });
     }
 
     @Override
     public  void  initObjectif(){
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
        axeStrategiqueRepository.findAll().forEach(axeStrategique -> {
            for(int i=0;i<2;i++){
                Objectif objectif=new Objectif();
                objectif.setIntitule(lorem.getTitle(8,10));
-               DateCO dateCO=new DateCO();
-               dateCO.setDateDebutPrevisionnel(LocalDate.now().plusMonths(3L));
-               objectif.setDateCO(dateCO);
-               dateCORepository.save(dateCO);
+               objectif.setDateDebutPrevisionnel(LocalDate.now().plusMonths(3L));
                objectif.setAxeStrategique(axeStrategique);
+               objectif.setCreatedByGestionnaire(gestionnaireRepository.getOne(1L +
+                       (long) (Math.random() * (gestSize - 1L))));
+               objectif.setTauxAvancement(Math.random() * 100);
                objectifRepository.save(objectif);
            }
        });
     }
 
+
     @Override
     public  void  initActionCO(){
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
      objectifRepository.findAll().forEach(objectif -> {
          for(int i=0;i<2;i++){
              ActionCO actionCO =new ActionCO();
              actionCO.setIntitule(lorem.getTitle(12,14));
              actionCO.setObjectif(objectif);
-             DateCO dateCO=new DateCO();
-             dateCO.setDateDebutPrevisionnel(LocalDate.now().plusMonths(2L));
-             dateCORepository.save(dateCO);
-             actionCO.setDateCO(dateCO);
+             actionCO.setDateDebutPrevisionnel(LocalDate.now().plusMonths(2L));
+             actionCO.setCreatedByGestionnaire(gestionnaireRepository.getOne(1L +
+                     (long) (Math.random() * (gestSize - 1L))));
+             actionCO.setTauxAvancement(Math.random() * 100);
              actionCORepository.save(actionCO);
          }
      });
     }
 
+    @Override
+    public void initModificationAxeStrategique() {
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
+        axeStrategiqueRepository.findAll().forEach(axeStrategique -> {
+            for (int i = 0; i < 2; i++) {
+                ModificationAxeStrategique modificationAxeStrategique = new ModificationAxeStrategique();
+                modificationAxeStrategique.setDateModification(LocalDate.ofEpochDay(ThreadLocalRandom
+                        .current().nextInt(49 * 365, 50 * 365)));
+                modificationAxeStrategique.setAxeStrategique(axeStrategique);
+                modificationAxeStrategique.setGestionnaire(gestionnaireRepository.getOne(1L +
+                        (long) (Math.random() * (gestSize - 1L))));
+                modificationAxeStrategiqueRepository.save(modificationAxeStrategique);
+            }
+        });
+    }
+
+    @Override
+    public void initModificationObjectif() {
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
+        objectifRepository.findAll().forEach(objectif -> {
+            for (int i = 0; i < 2; i++) {
+                ModificationObjectif modificationObjectif = new ModificationObjectif();
+                modificationObjectif.setDateModification(LocalDate.ofEpochDay(ThreadLocalRandom
+                        .current().nextInt(49 * 365, 50 * 365)));
+                modificationObjectif.setObjectif(objectif);
+                modificationObjectif.setGestionnaire(gestionnaireRepository.getOne(1L +
+                        (long) (Math.random() * (gestSize - 1L))));
+                modificationObjectifRepository.save(modificationObjectif);
+            }
+        });
+    }
+
+    @Override
+    public void initModificationActionCO() {
+        Integer numberOfGestionnaires = gestionnaireRepository.findAll().size();
+        Long gestSize = Long.valueOf(numberOfGestionnaires);
+        actionCORepository.findAll().forEach(actionCO -> {
+            for (int i = 0; i < 2; i++) {
+                ModificationActionCO modificationActionCO = new ModificationActionCO();
+                modificationActionCO.setDateModification(LocalDate.ofEpochDay(ThreadLocalRandom
+                        .current().nextInt(49 * 365, 50 * 365)));
+                modificationActionCO.setActionCO(actionCO);
+                modificationActionCO.setGestionnaire(gestionnaireRepository.getOne(1L +
+                        (long) (Math.random() * (gestSize - 1L))));
+                modificationActionCORepository.save(modificationActionCO);
+            }
+        });
+    }
+
+    @Override
+    public void initPartiePrenante() {
+        Integer numberOfUnites = uniteStructurelleRepository.findAll().size();
+        Long uniteSize = Long.valueOf(numberOfUnites);
+        objectifRepository.findAll().forEach(objectif -> {
+            for (int i = 0; i < 2; i++) {
+                PartiePrenante partiePrenante = new PartiePrenante();
+                partiePrenante.setObjectif(objectif);
+                partiePrenante.setUniteStructurelle(uniteStructurelleRepository.getOne(1L +
+                        (long) (Math.random() * (uniteSize - 1L))));
+                partiePrenanteRepository.save(partiePrenante);
+            }
+        });
+
+    }
 }

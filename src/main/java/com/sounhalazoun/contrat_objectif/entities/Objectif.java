@@ -16,14 +16,22 @@ public class Objectif implements Serializable {
     private Long id;
     private String intitule;
     private double tauxAvancement;
+    private LocalDate dateDebutPrevisionnel;
+    private LocalDate dateFinPrevisionnel;
+    private LocalDate dateDebutReel;
+    private LocalDate dateFinReel;
     @ManyToOne
     private AxeStrategique axeStrategique;
     @OneToMany(mappedBy = "objectif")
     private Collection<EvaluationObjectif> evaluationObjectifs;
-    @OneToOne
-    private DateCO dateCO;
     @OneToMany(mappedBy = "objectif")
     private Collection<ActionCO> actionCOS;
+    @ManyToOne
+    private Gestionnaire createdByGestionnaire;
+    @OneToMany(mappedBy = "objectif")
+    private Collection<ModificationObjectif> modificationObjectifs;
+    @OneToMany(mappedBy = "objectif")
+    private Collection<PartiePrenante> partiePrenantes;
 
 
 }
