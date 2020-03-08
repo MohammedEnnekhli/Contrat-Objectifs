@@ -26,4 +26,7 @@ public interface IContratObjectifsInit{
     void initModificationActionCO();
 
     void initPartiePrenante();
+
+    void initEvaluation();
+
 }

@@ -1,18 +1,23 @@
 package com.sounhalazoun.contrat_objectif.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
-public class Gestionnaire implements Serializable {
+@Inheritance( strategy = InheritanceType.SINGLE_TABLE )
+@DiscriminatorColumn( name = "typeUser", discriminatorType = DiscriminatorType.STRING, length = 6 )
+public  class Gestionnaire implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Size(max = 50)
@@ -24,11 +29,11 @@ public class Gestionnaire implements Serializable {
     @Size(max = 20)
     private String tel;
     @Email
+    @NotNull
+    @Column(unique=true)
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @Size(max = 50)
-    private String grade;
-    private Boolean isActive;
     @ManyToOne
     private UniteStructurelle uniteStructurelle;
     @OneToMany(mappedBy = "gestionnaire")

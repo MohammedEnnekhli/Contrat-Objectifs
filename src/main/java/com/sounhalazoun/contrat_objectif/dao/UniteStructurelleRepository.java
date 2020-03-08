@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-
 @RepositoryRestResource
 @CrossOrigin("*")
 

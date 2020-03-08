@@ -5,10 +5,12 @@ import com.sounhalazoun.contrat_objectif.entities.*;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -42,6 +44,15 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
     private ModificationActionCORepository modificationActionCORepository;
     @Autowired
     private PartiePrenanteRepository partiePrenanteRepository;
+    @Autowired
+    private AdminGestionnaireRepository adminGestionnaireRepository;
+    @Autowired
+    private SimpleGestionnaireRepository simpleGestionnaireRepository;
+    @Autowired
+    private EvaluationRepository evaluationRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private Lorem lorem = new LoremIpsum();
 
 
@@ -280,17 +291,26 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
     @Override
     public void initGestionnaire() {
       uniteStructurelleRepository.findAll().forEach(unite -> {
+          AdminGestionnaire adminGestionnaire =new AdminGestionnaire();
+          adminGestionnaire.setNom(lorem.getLastName());
+          adminGestionnaire.setPrenom(lorem.getFirstName());
+          adminGestionnaire.setCIN(lorem.getZipCode());
+          adminGestionnaire.setUniteStructurelle(unite);
+          adminGestionnaire.setTel(lorem.getPhone());
+          adminGestionnaire.setEmail(lorem.getEmail());
+          adminGestionnaire.setPassword(bCryptPasswordEncoder.encode("1234"));
+          adminGestionnaireRepository.save(adminGestionnaire);
          for (int i=0;i<2;i++){
-             Gestionnaire gestionnaire =new Gestionnaire();
-             gestionnaire.setNom(lorem.getLastName());
-             gestionnaire.setPrenom(lorem.getFirstName());
-             gestionnaire.setCIN(lorem.getZipCode());
-             gestionnaire.setUniteStructurelle(unite);
-             gestionnaire.setGrade(lorem.getStateAbbr());
-             gestionnaire.setTel(lorem.getPhone());
-             gestionnaire.setIsActive(true);
-             gestionnaire.setEmail(lorem.getEmail());
-             gestionnaireRepository.save(gestionnaire);
+             SimpleGestionnaire simpleGestionnaire =new SimpleGestionnaire();
+             simpleGestionnaire.setNom(lorem.getLastName());
+             simpleGestionnaire.setPrenom(lorem.getFirstName());
+             simpleGestionnaire.setCIN(lorem.getZipCode());
+             simpleGestionnaire.setUniteStructurelle(unite);
+             simpleGestionnaire.setTel(lorem.getPhone());
+             simpleGestionnaire.setActive(true);
+             simpleGestionnaire.setEmail(lorem.getEmail());
+             simpleGestionnaire.setPassword(bCryptPasswordEncoder.encode("123456"));
+             simpleGestionnaireRepository.save(simpleGestionnaire);
          }
 
       });
@@ -453,6 +473,17 @@ public class IContratObjectifsInitImpl implements IContratObjectifsInit {
                 partiePrenanteRepository.save(partiePrenante);
             }
         });
+
+    }
+    @Override
+    public void initEvaluation(){
+       adminGestionnaireRepository.findAll().forEach(adminGestionnaire -> {
+           Evaluation evaluation=new Evaluation();
+           evaluation.setAdminGestionnaire(adminGestionnaire);
+           evaluation.setDateCreation(new Date());
+           evaluation.setDateLimite(LocalDate.now().plusWeeks(2));
+           evaluationRepository.save(evaluation);
+       });
 
     }
 }
